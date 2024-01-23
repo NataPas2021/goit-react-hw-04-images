@@ -1,6 +1,7 @@
 import css from './SearchForm.module.css';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
+//import { Component } from 'react';
 import {AiOutlineSearch} from 'react-icons/ai';
 import {toast} from 'react-toastify';
 
@@ -18,9 +19,8 @@ const SearchForm = ({onSubmit}) => {
       return toast.error("Please, put in search query :)", {
         position: toast.POSITION.TOP_CENTER
       });
-    };
-    
-    onSubmit({...searchQuery});
+    } 
+    onSubmit(searchQuery); 
   }
 
     return (
@@ -89,8 +89,6 @@ export default SearchForm;
 //     )
 //  }
 // }
-
-
 
 // export default SearchForm;
 
