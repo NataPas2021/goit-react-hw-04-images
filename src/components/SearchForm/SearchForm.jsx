@@ -17,7 +17,8 @@ const SearchForm = ({onSubmit}) => {
     
     if(searchQuery.trim() === '') {
       return toast.error("Please, put in search query :)", {
-        position: toast.POSITION.TOP_CENTER
+        position: "top-center",
+        autoClose: 5000,
       });
     } 
     onSubmit(searchQuery); 
