@@ -10,16 +10,17 @@ axios.defaults.params = {
 
 export const fetchSearchedImages = async (searchQuery, currentPage) => {
         const response = await axios.get(`?q=${searchQuery}&page=${currentPage}`);
+        console.log(response.data); 
         return response.data;
 }
 
-export function imageValues(data) {
-    return data.map(({ id, largeImageURL, webformatURL, tags }) => ({
-      id,
-      largeImageURL,
-      webformatURL,
-      tags,
-    }));
-  }
+// export function imageValues(data) {
+//     return data.map(({ id, largeImageURL, webformatURL, tags }) => ({
+//       id,
+//       largeImageURL,
+//       webformatURL,
+//       tags,
+//     }));
+//   }
     
 

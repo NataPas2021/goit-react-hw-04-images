@@ -1,13 +1,13 @@
 //import { useState, useEffect } from 'react';
 import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 //import {Component} from 'react';
 import css from './App.module.css';
 import SearchBar from './SearchBar/SearchBar';
 import ImageGallery from './ImageGallery/ImageGallery';
 import Button from './Button/Button';
-import { fetchSearchedImages, imageValues } from 'services/api';
+import { fetchSearchedImages } from 'services/api';
 import Modal from './Modal/Modal';
 import { InfinitySpin } from 'react-loader-spinner';
 
@@ -20,6 +20,31 @@ const App = () => {
   const [showModal, setShowModal] = useState(false);
   const [largeImageURL, setLargeImageURL] = useState('');
   const [tags, setTags] = useState('');
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+      setIsLoading(true);
+      const {data} = await fetchSearchedImages(searchQuery, currentPage);
+      const {totalHits} = data;
+      
+      if(totalHits === 0) {
+        toast.warn('Unfortunately, we didnt find any pictures. Please, try another query');
+      }
+      setImages(prevImages => [...prevImages, ...data])
+        ; 
+    } catch(error) {
+      setError('Ooops, something went wrong. Please reload page');
+    } finally {
+      setIsLoading(false);
+    }
+    } 
+
+    fetchImages(); 
+   
+ } , [searchQuery, currentPage])
+
+ 
  
   const handleFormSubmit = ({searchQuery}) => {
         setSearchQuery(searchQuery);
