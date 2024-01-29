@@ -7,45 +7,52 @@ import css from './App.module.css';
 import SearchBar from './SearchBar/SearchBar';
 import ImageGallery from './ImageGallery/ImageGallery';
 import Button from './Button/Button';
-import { fetchSearchedImages } from 'services/api';
+import fetchSearchedImages from 'services/api';
 import Modal from './Modal/Modal';
 import { InfinitySpin } from 'react-loader-spinner';
 
 const App = () => {
   const [images, setImages] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState('beauty');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [showModal, setShowModal] = useState(false);
   const [largeImageURL, setLargeImageURL] = useState('');
   const [tags, setTags] = useState('');
+  
 
   useEffect(() => {
-    const fetchImages = async () => {
-      try {
-      setIsLoading(true);
-      const {data} = await fetchSearchedImages(searchQuery, currentPage);
-      const {totalHits} = data;
-      
-      if(totalHits === 0) {
-        toast.warn('Unfortunately, we didnt find any pictures. Please, try another query');
-      }
-      setImages(prevImages => [...prevImages, ...data])
-        ; 
-    } catch(error) {
-      setError('Ooops, something went wrong. Please reload page');
-    } finally {
-      setIsLoading(false);
+    if(searchQuery) {
+      fetchImages(); 
     }
-    } 
+ } , [searchQuery]);
 
-    fetchImages(); 
-   
- } , [searchQuery, currentPage])
+ const fetchImages = () => {
+  const options = {
+    searchQuery,
+    currentPage,
+  };
 
- 
- 
+  setIsLoading(true);
+
+  fetchSearchedImages(options)
+    .then(
+      images => setImages(prevState => [...prevState, ...images]),
+      setCurrentPage(prevState => prevState + 1),
+    )
+    .catch(err => setError(err))
+    .finally(() => setIsLoading(false));
+};
+
+//  const imageValues = ({data}) => {
+//   return data.map(({ id, largeImageURL, webformatURL, tags }) => ({
+//     id,
+//     largeImageURL,
+//     webformatURL,
+//     tags,
+//   }));
+
   const handleFormSubmit = ({searchQuery}) => {
         setSearchQuery(searchQuery);
         setCurrentPage(1);

@@ -7,12 +7,11 @@ axios.defaults.params = {
     orientation: 'horizontal',
     per_page: '12',
 }
-
-export const fetchSearchedImages = async (searchQuery, currentPage) => {
-        const response = await axios.get(`?q=${searchQuery}&page=${currentPage}`);
-        console.log(response.data); 
-        return response.data;
+ const fetchSearchedImages = ({searchQuery, currentPage}) => {
+    return  axios.get(`?q=${searchQuery}&page=${currentPage}`).then(({data}) => data.hits )      
 }
+
+export default fetchSearchedImages;
 
 // export function imageValues(data) {
 //     return data.map(({ id, largeImageURL, webformatURL, tags }) => ({
