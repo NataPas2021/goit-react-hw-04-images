@@ -7,8 +7,13 @@ axios.defaults.params = {
     orientation: 'horizontal',
     per_page: '12',
 }
- const fetchSearchedImages = ({searchQuery, currentPage}) => {
-    return  axios.get(`?q=${searchQuery}&page=${currentPage}`).then(({data}) => data.hits )      
+ const fetchSearchedImages = async ({searchQuery, currentPage}) => {
+    const controller = new AbortController();
+    const data = await axios.get(`?q=${searchQuery}&page=${currentPage}`,{
+        signal: controller.signal
+     });
+    console.log(data);
+    return data;      
 }
 
 export default fetchSearchedImages;

@@ -13,7 +13,7 @@ import { InfinitySpin } from 'react-loader-spinner';
 
 const App = () => {
   const [images, setImages] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('beauty');
+  const [searchQuery, setSearchQuery] = useState('cats');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -23,28 +23,28 @@ const App = () => {
   
 
   useEffect(() => {
-    if(searchQuery) {
+    const controller = new AbortController();
+    const fetchImages = async () => {
+      try {
+              setIsLoading(true);
+              const {totalHits, hits} = await fetchSearchedImages(searchQuery, currentPage);
+              setImages(prevImages => totalHits.length ? [...prevImages, ...hits] : toast.warn('Unfortunately, we didnt find any pictures. Please, try another query'))
+          
+            } catch(error) {
+              setError('Ooops, something went wrong. Please reload page');
+            } finally {
+              setIsLoading(false);
+            }   
+          }
+     if(searchQuery) {
       fetchImages(); 
     }
- } , [searchQuery]);
+    return () => {
+      controller.abort();
+    }
+ } , [searchQuery, currentPage]);
 
- const fetchImages = () => {
-  const options = {
-    searchQuery,
-    currentPage,
-  };
-
-  setIsLoading(true);
-
-  fetchSearchedImages(options)
-    .then(
-      images => setImages(prevState => [...prevState, ...images]),
-      setCurrentPage(prevState => prevState + 1),
-    )
-    .catch(err => setError(err))
-    .finally(() => setIsLoading(false));
-};
-
+ 
 //  const imageValues = ({data}) => {
 //   return data.map(({ id, largeImageURL, webformatURL, tags }) => ({
 //     id,
