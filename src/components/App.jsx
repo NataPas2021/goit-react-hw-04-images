@@ -23,25 +23,48 @@ const App = () => {
   
 
   useEffect(() => {
-    const controller = new AbortController();
-    const fetchImages = async () => {
+    if(searchQuery) {
+      fetchImg();
+    }
+
+    async function fetchImg () {
       try {
-              setIsLoading(true);
-              const {totalHits, hits} = await fetchSearchedImages(searchQuery, currentPage);
-              setImages(prevImages => totalHits.length ? [...prevImages, ...hits] : toast.warn('Unfortunately, we didnt find any pictures. Please, try another query'))
+        const {data} = await fetchSearchedImages(searchQuery, currentPage)
+        console.log(data)
+        setImages(prevImages => data.totalHits === 0 ? toast.warn('Unfortunately, we didnt find any pictures. Please, try another query') : [...prevImages, ...data.hits])
+        console.log(images)
+      } catch (error) {
+        setError('Ooops, something went wrong. Please reload page');
+      }
+      finally {
+
+      }
+      
+    }
+    
+    //const controller = new AbortController();
+    
+    
+    
+    //const fetchImages = async () => {
+      // try {
+      //         setIsLoading(true);
+      //         const {totalHits, hits} = await fetchSearchedImages(searchQuery, currentPage);
+      //         console.log(hits);
+      //         setImages(prevImages => totalHits === 0 ? toast.warn('Unfortunately, we didnt find any pictures. Please, try another query') : [...prevImages, ...hits])
           
-            } catch(error) {
-              setError('Ooops, something went wrong. Please reload page');
-            } finally {
-              setIsLoading(false);
-            }   
-          }
-     if(searchQuery) {
-      fetchImages(); 
-    }
-    return () => {
-      controller.abort();
-    }
+      //       } catch(error) {
+      //         setError('Ooops, something went wrong. Please reload page');
+      //       } finally {
+      //         setIsLoading(false);
+      //       }   
+      //   }
+    //  if(searchQuery) {
+    //   fetchImages(); 
+    // }
+    // return () => {
+    //   controller.abort();
+    // }
  } , [searchQuery, currentPage]);
 
  

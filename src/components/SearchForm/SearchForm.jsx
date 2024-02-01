@@ -6,22 +6,22 @@ import {AiOutlineSearch} from 'react-icons/ai';
 import {toast} from 'react-toastify';
 
 const SearchForm = ({onSubmit}) => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [state, setState] = useState('');
   
   const handleChange = event => {
-    setSearchQuery(event.currentTarget.value.toLowerCase())
+    setState(event.currentTarget.value.toLowerCase())
    };
 
   const handleSubmit = event => {
     event.preventDefault();
     
-    if(searchQuery.trim() === '') {
+    if(state.trim() === '') {
       return toast.error("Please, put in search query :)", {
         position: "top-center",
         autoClose: 5000,
       });
     } 
-    onSubmit(searchQuery); 
+    onSubmit({state}); 
   }
 
     return (
@@ -37,7 +37,7 @@ const SearchForm = ({onSubmit}) => {
              autoComplete="off"
              autoFocus
              placeholder="Search images and photos"
-             value={searchQuery}
+             value={state}
              onChange={handleChange}
           />
         </form>
