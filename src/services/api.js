@@ -9,22 +9,21 @@ axios.defaults.params = {
     orientation: 'horizontal',
     per_page: '12',
 }
- const fetchSearchedImages = (searchQuery, currentPage) => {
+ export const fetchSearchedImages = (searchQuery, currentPage) => {
     const response = axios.get(`?q=${searchQuery}&page=${currentPage}`);
-    console.log(response);
     return response;      
 }
 
-export default fetchSearchedImages;
+//export default fetchSearchedImages;
 
-// export function imageValues(data) {
-//     return data.map(({ id, largeImageURL, webformatURL, tags }) => ({
-//       id,
-//       largeImageURL,
-//       webformatURL,
-//       tags,
-//     }));
-//   }
+export function imageValues(data) {
+    return data.map(({ id, largeImageURL, webformatURL, tags }) => ({
+      id,
+      largeImageURL,
+      webformatURL,
+      tags,
+    }));
+  }
     
 
 

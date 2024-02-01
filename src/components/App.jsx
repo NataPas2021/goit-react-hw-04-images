@@ -7,13 +7,13 @@ import css from './App.module.css';
 import SearchBar from './SearchBar/SearchBar';
 import ImageGallery from './ImageGallery/ImageGallery';
 import Button from './Button/Button';
-import fetchSearchedImages from 'services/api';
+import {fetchSearchedImages, imageValues} from 'services/api';
 import Modal from './Modal/Modal';
 import { InfinitySpin } from 'react-loader-spinner';
 
 const App = () => {
   const [images, setImages] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('cats');
+  const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -23,58 +23,32 @@ const App = () => {
   
 
   useEffect(() => {
+    
     if(searchQuery) {
       fetchImg();
     }
-
     async function fetchImg () {
       try {
+        setIsLoading(true);
         const {data} = await fetchSearchedImages(searchQuery, currentPage)
-        console.log(data)
-        setImages(prevImages => data.totalHits === 0 ? toast.warn('Unfortunately, we didnt find any pictures. Please, try another query') : [...prevImages, ...data.hits])
-        console.log(images)
+        console.log(data.hits);
+        const newImg = imageValues(data.hits);
+        setImages(prevImages => data.totalHits === 0 ? toast.warn('Unfortunately, we didnt find any pictures. Please, try another query') : [...prevImages, ...newImg])
       } catch (error) {
         setError('Ooops, something went wrong. Please reload page');
       }
       finally {
-
+       setIsLoading(false);
       }
       
     }
     
     //const controller = new AbortController();
     
-    
-    
-    //const fetchImages = async () => {
-      // try {
-      //         setIsLoading(true);
-      //         const {totalHits, hits} = await fetchSearchedImages(searchQuery, currentPage);
-      //         console.log(hits);
-      //         setImages(prevImages => totalHits === 0 ? toast.warn('Unfortunately, we didnt find any pictures. Please, try another query') : [...prevImages, ...hits])
-          
-      //       } catch(error) {
-      //         setError('Ooops, something went wrong. Please reload page');
-      //       } finally {
-      //         setIsLoading(false);
-      //       }   
-      //   }
-    //  if(searchQuery) {
-    //   fetchImages(); 
-    // }
     // return () => {
     //   controller.abort();
     // }
  } , [searchQuery, currentPage]);
-
- 
-//  const imageValues = ({data}) => {
-//   return data.map(({ id, largeImageURL, webformatURL, tags }) => ({
-//     id,
-//     largeImageURL,
-//     webformatURL,
-//     tags,
-//   }));
 
   const handleFormSubmit = ({searchQuery}) => {
         setSearchQuery(searchQuery);
@@ -86,10 +60,10 @@ const App = () => {
    
   const toggleModal = () => setShowModal(!showModal);
     
-  const openModal = ({largeImageURL, tags}) => {
+  const openModal = (largeImageURL, tags) => {
        toggleModal();
        setLargeImageURL(largeImageURL);
-       setTags(tags);  
+       setTags(tags);     
       }
         
         return (

@@ -1,28 +1,43 @@
 import css from './SearchForm.module.css';
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 //import { Component } from 'react';
 import {AiOutlineSearch} from 'react-icons/ai';
 import {toast} from 'react-toastify';
 
 const SearchForm = ({onSubmit}) => {
-  const [state, setState] = useState('');
+  const [state, setState] = useState({
+    searchQuery: "",
+  });
   
+  const inputRef = useRef(null);
+
+  useEffect(()=> {
+        inputRef.current.focus();
+  }, [])
+
   const handleChange = event => {
-    setState(event.currentTarget.value.toLowerCase())
+    setState({searchQuery: event.currentTarget.value.toLowerCase()})
    };
 
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     
-    if(state.trim() === '') {
-      return toast.error("Please, put in search query :)", {
+    if(state.searchQuery.trim() === '') {
+      return toast.error("Please, put in search query :/)", {
         position: "top-center",
         autoClose: 5000,
-      });
-    } 
-    onSubmit({state}); 
+      })
+    }
+    onSubmit({...state}); 
+    reset();
   }
+
+  const reset = () => {
+    setState({
+        searchQuery: ""
+    });
+}
 
     return (
       <>
@@ -32,12 +47,13 @@ const SearchForm = ({onSubmit}) => {
            </button>
            <input
              className={css.searchFormInput}
+             ref={inputRef}
              name="imageSearchInput"
              type="text"
              autoComplete="off"
              autoFocus
              placeholder="Search images and photos"
-             value={state}
+             value={state.searchQuery}
              onChange={handleChange}
           />
         </form>
@@ -62,9 +78,9 @@ export default SearchForm;
 //   if(this.state.searchQuery.trim() === '') {
 //     return toast.error("Please, put in search query :)", {
 //       position: toast.POSITION.TOP_CENTER
-//     });
-//   }
+//     })
   
+//   }
 //   this.props.onSubmit(this.state.searchQuery);
 //  }
 
