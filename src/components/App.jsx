@@ -27,6 +27,9 @@ const App = () => {
     if(searchQuery) {
       fetchImg();
     }
+    
+    //const controller = new AbortController();
+
     async function fetchImg () {
       try {
         setIsLoading(true);
@@ -42,9 +45,6 @@ const App = () => {
       }
       
     }
-    
-    //const controller = new AbortController();
-    
     // return () => {
     //   controller.abort();
     // }
